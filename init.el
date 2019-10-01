@@ -1,22 +1,6 @@
 (require 'package)
 (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                    (not (gnutls-available-p))))
-       (proto (if no-ssl "http" "https")))
-  (when no-ssl
-    (warn "\
-Your version of Emacs does not support SSL connections,
-which is unsafe because it allows man-in-the-middle attacks.
-There are two things you can do about this warning:
-1. Install an Emacs version that does support SSL and be safe.
-2. Remove this warning from your init file so you won't see it again."))
-  ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-  (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-  ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-  (when (< emacs-major-version 24)
-    ;; For important compatibility libraries like cl-lib
-    (add-to-list 'package-archives (cons "gnu" (concat proto "://elpa.gnu.org/packages/")))))
-(package-initialize)
-
+           
 (add-to-list 'load-path "~/.emacs.d/evil")
 (require 'evil)
 (evil-mode 1)
@@ -27,7 +11,8 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+))))
+    (ag helpful magit-annex evil-magit flx-ido zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile counsel centaur-tabs gnus-recent smex ivy ido-completing-read+)))
+ '(projectile-mode t nil (projectile)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -78,8 +63,8 @@ There are two things you can do about this warning:
 (global-set-key (kbd "C-h v") #'helpful-variable)
 (global-set-key (kbd "C-h k") #'helpful-key)
 
-(projectile-mode +1)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(counsel-projectile-mode +1)
+(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (global-set-key (kbd "H-w") #'aya-create)
@@ -102,3 +87,5 @@ There are two things you can do about this warning:
 (set-language-environment "Korean")
 (prefer-coding-system 'utf-8)
 
+(setq w32-pass-lwindow-to-system nil
+      w32-lwindow-modifier 'super) ;; Menu key

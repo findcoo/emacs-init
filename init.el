@@ -27,7 +27,7 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+))))
+    (lsp-ui yasnippet yasnippet-snippets flymake-go go-mode lsp-java tern-auto-complete tern 0blayout lsp-mode ag magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+ auto-complete))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -35,6 +35,7 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  )
 
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 ;; Essential plugins(ivy, smex, counsel, centaur-tabs...)
 (ido-ubiquitous-mode 1)
@@ -79,7 +80,7 @@ There are two things you can do about this warning:
 (global-set-key (kbd "C-h k") #'helpful-key)
 
 (counsel-projectile-mode +1)
-(define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+(define-key projectile-mode-map (kbd "M-p") 'projectile-command-map)
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 (global-set-key (kbd "H-w") #'aya-create)
@@ -94,6 +95,17 @@ There are two things you can do about this warning:
          ("\\.markdown\\'" . markdown-mode))
   :init (setq markdown-command "multimarkdown"))
 
+(add-hook 'after-init-hook 'global-company-mode)
+
+(global-flycheck-mode)
+(exec-path-from-shell-initialize)
+(exec-path-from-shell-copy-env "GOROOT")
+(exec-path-from-shell-copy-env "GOPATH")
+
+(setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+
+(ac-config-default)
+
 ;; Appearence setup
 (load-theme 'zenburn t)
 (menu-bar-mode -1)
@@ -101,4 +113,39 @@ There are two things you can do about this warning:
 (tool-bar-mode -1)
 (set-language-environment "Korean")
 (prefer-coding-system 'utf-8)
+(set-face-attribute 'default nil :height 150)
+
+
+;; Development settings
+
+(require 'evil-magit)
+
+;; emmet
+(add-hook 'sgml-mode-hook 'emmet-mode)
+(add-hook 'css-mode-hook 'emmet-mode)
+(setq emmet-move-cursor-between-quotes t)
+(setq emmet-expand-jsx-className? t)
+(setq emmet-self-closing-tag-style " /")
+
+;; js2-mode, improvement javascript editing
+(add-hook 'js-mode-hook 'js2-minor-mode)
+(add-to-list 'interpreter-mode-alist '("node" . js2-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx?\\'" . js2-jsx-mode))
+(add-to-list 'interpreter-mode-alist '("node" . js2-jsx-mode))
+
+;; lsp settings
+(use-package lsp-mode
+  :hook (js-mode . lsp-deferred)
+  :hook (java-mode . lsp-deferred)
+  :hook (go-mode . lsp-deferred)
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-ui :commands lsp-ui-mode)
+(add-hook 'js-mode-hook (lambda () (tern-mode t)))
+(eval-after-load 'tern
+   '(progn
+      (require 'tern-auto-complete)
+      (tern-ac-setup)))
+(evil-define-key 'normal js-mode-map "gd" 'tern-find-definition)
+(evil-define-key 'normal go-mode-map "gd" 'lsp-find-definition)
 

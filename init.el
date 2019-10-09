@@ -27,7 +27,7 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (lsp-ui yasnippet yasnippet-snippets flymake-go go-mode lsp-java tern-auto-complete tern 0blayout lsp-mode ag magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+ auto-complete))))
+    (dashboard company company-lsp lsp-ui yasnippet yasnippet-snippets flymake-go go-mode lsp-java tern 0blayout lsp-mode ag magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -104,8 +104,6 @@ There are two things you can do about this warning:
 
 (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
 
-(ac-config-default)
-
 ;; Appearence setup
 (load-theme 'zenburn t)
 (menu-bar-mode -1)
@@ -114,6 +112,11 @@ There are two things you can do about this warning:
 (set-language-environment "Korean")
 (prefer-coding-system 'utf-8)
 (set-face-attribute 'default nil :height 150)
+
+(use-package dashboard
+  :ensure t
+  :config
+  (dashboard-setup-startup-hook))
 
 
 ;; Development settings
@@ -141,11 +144,10 @@ There are two things you can do about this warning:
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui :commands lsp-ui-mode)
+
 (add-hook 'js-mode-hook (lambda () (tern-mode t)))
-(eval-after-load 'tern
-   '(progn
-      (require 'tern-auto-complete)
-      (tern-ac-setup)))
 (evil-define-key 'normal js-mode-map "gd" 'tern-find-definition)
 (evil-define-key 'normal go-mode-map "gd" 'lsp-find-definition)
 
+(require 'company-lsp)
+(push 'company-lsp company-backends)

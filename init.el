@@ -27,7 +27,7 @@ There are two things you can do about this warning:
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (jsx-mode typescript-mode rjsx-mode dashboard company company-lsp lsp-ui yasnippet yasnippet-snippets flymake-go go-mode lsp-java 0blayout lsp-mode ag magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+))))
+    (lsp-ivy lsp-treemacs dap-mode jsx-mode typescript-mode rjsx-mode dashboard company company-lsp lsp-ui yasnippet yasnippet-snippets flymake-go go-mode lsp-java 0blayout lsp-mode ag magit-annex evil-magit flx-ido magit zenburn-theme powerline-evil markdown-mode+ use-package auto-yasnippet counsel-projectile helpful counsel centaur-tabs gnus-recent smex ivy ido-completing-read+))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -102,6 +102,7 @@ There are two things you can do about this warning:
 (exec-path-from-shell-copy-env "GOROOT")
 (exec-path-from-shell-copy-env "GOPATH")
 
+
 (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
 
 ;; Appearence setup
@@ -130,7 +131,6 @@ There are two things you can do about this warning:
 (setq emmet-expand-jsx-className? t)
 (setq emmet-self-closing-tag-style " /")
 
-
 (add-to-list 'auto-mode-alist '(".+\/[A-Z][a-z]+.js?" . rjsx-mode))
 
 ;; lsp settings
@@ -139,12 +139,14 @@ There are two things you can do about this warning:
   :hook (js2-mode . lsp-deferred)
   :hook (typescript-mode . lsp-deferred)
   :hook (rjsx-mode . lsp-deferred)
-  :hook (java-mode . lsp-deferred)
   :hook (go-mode . lsp-deferred)
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui :commands lsp-ui-mode)
 (use-package company-lsp :commands company-lsp)
+(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
+(use-package dap-mode)
 
 (put 'dired-find-alternate-file 'disabled nil)
 
@@ -152,5 +154,3 @@ There are two things you can do about this warning:
 (evil-define-key 'normal go-mode-map "gd" 'lsp-find-definition)
 
 (require 'yasnippet)
-
-components/Create.js
